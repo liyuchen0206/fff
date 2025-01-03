@@ -1,0 +1,44 @@
+name: Build Windows Executables
+
+on:
+  push:
+    branches:
+      - main  # 触发条件：推送到 main 分支时
+  pull_request:  # 在拉取请求时触发
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Compile for Windows
+    runs-on: windows-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 设置 MinGW 环境
+      - name: Install MinGW
+        run: |
+          choco install mingw -y
+          echo "::add-path::C:\\tools\\mingw64\\bin"
+
+      # 编译 32 位版本
+      - name: Compile 32-bit EXE
+        run: |
+          gcc -m32 -o write_mbr_32.exe write_mbr.c
+
+      # 编译 64 位版本
+      - name: Compile 64-bit EXE
+        run: |
+          gcc -m64 -o write_mbr_64.exe write_mbr.c
+
+      # 保存构建的文件作为工件
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-executables
+          path: |
+            write_mbr_32.exe
+            write_mbr_64.exe
