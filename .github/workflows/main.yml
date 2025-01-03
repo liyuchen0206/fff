@@ -24,7 +24,7 @@ jobs:
           choco install mingw -y
         shell: cmd
 
-      # 添加 MinGW 的路径到环境变量
+      # 确保路径正确并包含所需工具
       - name: Add MinGW to PATH
         run: |
           echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
