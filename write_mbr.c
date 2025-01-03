@@ -2,6 +2,8 @@
 #include <winioctl.h>
 #include <stdio.h>
 #include <ntddscsi.h>
+#include <stdbool.h> // 修复 "bool" 类型错误
+#include <stddef.h>  // 修复 "offsetof" 宏错误
 
 unsigned char scode[] =
 "\xb8\x12\x00\xcd\x10\xbd\x18\x7c\xb9\x18\x00\xb8\x01\x13\xbb\x0c"
