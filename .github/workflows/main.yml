@@ -3,8 +3,8 @@ name: Build Windows Executables
 on:
   push:
     branches:
-      - main  # 触发条件：推送到 main 分支时
-  pull_request:  # 在拉取请求时触发
+      - main  # 推送到 main 分支时触发
+  pull_request:  # 拉取请求时触发
     branches:
       - main
 
@@ -18,11 +18,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 设置 MinGW 环境
+      # 安装 MinGW
       - name: Install MinGW
         run: |
           choco install mingw -y
-          echo "::add-path::C:\\tools\\mingw64\\bin"
+        shell: cmd
+
+      # 添加 MinGW 的路径到环境变量
+      - name: Add MinGW to PATH
+        run: |
+          echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
+        shell: pwsh
 
       # 编译 32 位版本
       - name: Compile 32-bit EXE
@@ -34,7 +40,7 @@ jobs:
         run: |
           gcc -m64 -o write_mbr_64.exe write_mbr.c
 
-      # 保存构建的文件作为工件
+      # 上传生成的文件作为工件
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
